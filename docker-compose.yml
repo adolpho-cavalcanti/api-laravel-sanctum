@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  maria:
+    image: mariadb:latest
+    ports: 
+    - "3306:3306"
+    environment:       
+      MYSQL_USER: atelie
+      MYSQL_PASSWORD: propagandas
+      MYSQL_DATABASE: atelie
+      MYSQL_ROOT_PASSWORD: propagandas
+      TZ: America/Sao_Paulo        
+  redis:
+    image: redis:latest      
+  dev:    
+    image: elninocavalcanti10/laravel:php7.4-cli        
+    environment:
+       uid: ${UID}
+    user: ${UID}
+    ports:
+    - "8000:8000"
+    volumes:    
+    - './src:/app'
+    working_dir: /app
+    links:
+    - maria
+    - redis
+    command: /bin/sh -c "composer install && yarn && yarn dev && php artisan serve --host 0.0.0.0"

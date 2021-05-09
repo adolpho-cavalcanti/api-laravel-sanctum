@@ -14,12 +14,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $users = [
-            ['id' => 1, 'name' => 'Jorge da Silva', 'email' => 'jorge@terra.com.br', 'cpf' => '92692654048', 'nascimento' => '1980-08-03', 'password' => bcrypt('docker@1212'), 'company_id' => 3],
-        ];
+        $user = ['id' => 1, 'name' => 'Adolpho Cavalcanti', 'email' => 'adolpho@terra.com.br', 'password' => bcrypt('docker@1212')];
 
-        foreach($users as $user){
-            User::create($user);
-        }
+        User::create($user);
     }
 }

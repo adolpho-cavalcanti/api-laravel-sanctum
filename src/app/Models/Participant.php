@@ -7,19 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Company extends Model
+class Participant extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'id',
-        'cnpj',
-        'razao_social',
+        'name',
+        'email',
+        'cpf',
+        'nascimento',
+        'company_id',
     ];
 
-    public function participant()
+    public function company()
     {
-        return $this->hasMany(Participant::class);
+        return $this->belongsTo(Company::class);
     }
 
 }

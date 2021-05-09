@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
+use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CompanyController extends Controller
+class ParticipantController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,12 +16,13 @@ class CompanyController extends Controller
     public function index()
     {
         try {
-            $companies = Company::with('participant')->get();
-            
+            $participants = Participant::with('company')->get();
+
         } catch (\Exception $e) {
         	return response()->json($e->getMessage());
         }
-        return response()->json($companies);
+        return response()->json($participants);
+
     }
 
     /**
@@ -34,10 +35,14 @@ class CompanyController extends Controller
     {
         DB::beginTransaction();
         try {
-            $company = Company::create([
-                'cnpj' => $request['cnpj'],
-                'razao_social' => $request['razao_social']
-            ]);
+            $data = $request->all();
+            $participant = Participant::create([
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'cpf' => $data['cpf'],
+                    'nascimento' => $data['nascimento'],
+                    'company_id' => $data['company_id'],
+                ]);                  
 
             DB::commit();
 
@@ -45,8 +50,7 @@ class CompanyController extends Controller
           DB::rollback();
         	return response()->json($e->getMessage());
         }
-
-        return response()->json($company);
+        return response()->json($participant);
     }
 
     /**
@@ -58,12 +62,12 @@ class CompanyController extends Controller
     public function show($id)
     {
         try {
-            $company = Company::findOrFail($id);
+            $participant = Participant::findOrFail($id);
 
         } catch (\Exception $e) {
         	return response()->json($e->getMessage());
         }
-        return response()->json($company);
+        return response()->json($participant);
     }
 
     /**
@@ -77,20 +81,15 @@ class CompanyController extends Controller
     {
         DB::beginTransaction();
         try {
-            $company = Company::findOrFail($id)
-            ->update([
-                'cnpj' => $request['cnpj'],
-                'razao_social' => $request['razao_social']
-            ]);
+            $participant = Participant::findOrFail($id);
+            $participant->update($request->all());
 
             DB::commit();
         } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json($e->getMessage());
+          DB::rollback();
+        	return response()->json($e->getMessage());
         }
-        
-        return response()->json($company);
-
+        return response()->json($participant);
     }
 
     /**
@@ -103,14 +102,14 @@ class CompanyController extends Controller
     {
         DB::beginTransaction();
         try {
-            $company = Company::findOrFail($id);
-            $company->delete();
-            
+            $participant = Participant::findOrFail($id);
+            $participant->delete();
+
             DB::commit();
         } catch (\Exception $e) {
           DB::rollback();
         	return response()->json($e->getMessage());
         }
     }
-    
+
 }
